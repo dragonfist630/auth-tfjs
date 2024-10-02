@@ -1,6 +1,6 @@
 [
   {
-    "paths": ["mtcnn_model-shard1.shard"],
+    "paths": ["mtcnn_model-shard1"],
     "weights": [
       {
         "dtype": "float32",

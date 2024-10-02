@@ -274,6 +274,6 @@
         }
       }
     ],
-    "paths": ["face_landmark_68_tiny_model-shard1.shard"]
+    "paths": ["face_landmark_68_tiny_model-shard1"]
   }
 ]
