@@ -21,7 +21,6 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/loggedUser" element={<LoggedUser />} />
         <Route path="/authenticated" element={<AuthUser />} />
-        <Route path="/error" element={<AuthUser />} />
       </Routes>
     </Router>
   );
