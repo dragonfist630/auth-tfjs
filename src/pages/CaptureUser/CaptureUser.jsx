@@ -5,7 +5,7 @@ import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
 import { Button, Box, Typography, Paper, Snackbar, Alert } from '@mui/material';
 import { encryptEmail, encryptDescriptors } from '../../services/cryptography';
-import { addUserData } from '../../firebaseUtils/apiService'; 
+import { addUserData } from '../../firebaseUtils/apiService';
 
 const descriptors = [];
 
@@ -15,7 +15,7 @@ const CaptureUser = ({ firstName, lastName, email, dateOfBirth, onBack }) => {
   const [loading, setLoading] = useState(false);
   const [captureImgLoader, setCaptureImgLoader] = useState(false);
   const [captureImgError, setCaptureImgError] = useState(false);
-  
+
   const navigate = useNavigate();
 
   const captureImage = async () => {
@@ -45,8 +45,18 @@ const CaptureUser = ({ firstName, lastName, email, dateOfBirth, onBack }) => {
   const DBWrite = async () => {
     setLoading(true);
     try {
-      const encryptedEmail = encryptEmail(email, firstName, lastName, dateOfBirth);
-      const encryptedDescriptors = encryptDescriptors(descriptors, firstName, lastName, dateOfBirth);
+      const encryptedEmail = encryptEmail(
+        email,
+        firstName,
+        lastName,
+        dateOfBirth
+      );
+      const encryptedDescriptors = encryptDescriptors(
+        descriptors,
+        firstName,
+        lastName,
+        dateOfBirth
+      );
 
       const userDetails = {
         name: `${firstName || ''} ${lastName || ''}`,
@@ -115,7 +125,7 @@ const CaptureUser = ({ firstName, lastName, email, dateOfBirth, onBack }) => {
               width: '100%',
               maxWidth: 650,
               height: 'auto',
-            }} 
+            }}
           />
           {buttonClickedCount < 5 && (
             <Box display="flex" flexDirection="column" alignItems="center">
@@ -123,9 +133,9 @@ const CaptureUser = ({ firstName, lastName, email, dateOfBirth, onBack }) => {
                 <Box
                   component="img"
                   alt="Face Snapshot Guide"
-                  src={`/snapshotGuide/face_${buttonClickedCount + 1}.jpg`}
+                  src={`snapshotGuide/face_${buttonClickedCount + 1}.jpg`}
                   sx={{
-                    width: { xs: '80%', md: 250 }, 
+                    width: { xs: '80%', md: 250 },
                     height: 'auto',
                     borderRadius: 2,
                     objectFit: 'contain',
