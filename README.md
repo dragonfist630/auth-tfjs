@@ -2,15 +2,6 @@
 ## Live Demo 🔗
 [https://dragonfist630.github.io/auth-tfjs](https://dragonfist630.github.io/auth-tfjs)
 
-## Table of Contents 📑
-- [About the Project](#about-the-project)
-- [Screenshots](#screenshots)
-- [Technologies Used](#technologies-used)
-- [Setup / Installation](#setup--installation)
-- [Approach](#approach)
-- [Status](#status)
-- [Credits](#credits)
-
 ## About the Project 📚
 This project is a Face Recognition Authentication System that uses advanced facial recognition technology to provide secure user authentication. It allows users to register by capturing multiple facial images and then use their face for login. The system is designed to be robust, user-friendly, and secure, leveraging modern web technologies and machine learning models for facial recognition.
 
