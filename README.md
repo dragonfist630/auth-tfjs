@@ -1,5 +1,4 @@
 # Face Recognition Authentication System 📛
-
 ## Live Demo 🔗
 [https://dragonfist630.github.io/auth-tfjs](https://dragonfist630.github.io/auth-tfjs)
 
@@ -46,5 +45,3 @@ The project is currently in active development. Core functionalities are impleme
 - React documentation: [https://reactjs.org/](https://reactjs.org/)
 - Firebase documentation: [https://firebase.google.com/docs](https://firebase.google.com/docs)
 - Material-UI components: [https://mui.com/](https://mui.com/)
-
-[Add any additional credits or acknowledgments here]
