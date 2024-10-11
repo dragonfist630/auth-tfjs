@@ -32,8 +32,7 @@ const Recognition = ({ userData, userId }) => {
   const [countdown, setCountdown] = useState(60);
   const intervalRef = useRef(null);
   const navigate = useNavigate();
-  const selectedHandSign = 'B';
-  // generateRandomLetter();
+  const selectedHandSign = generateRandomLetter();
 
   const imgURL = `https://firebasestorage.googleapis.com/v0/b/auth-tfjs.appspot.com/o/HandSign%20Image%2F${selectedHandSign}.jpg?alt=media&token=${process.env.REACT_APP_TOKEN}`;
 

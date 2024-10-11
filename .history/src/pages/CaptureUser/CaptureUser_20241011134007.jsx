@@ -24,6 +24,11 @@ const CaptureUser = ({ firstName, lastName, email, dateOfBirth, onBack }) => {
 
   const captureImage = async () => {
     try {
+      if (!webcam || !webcam.video) {
+        console.error('Webcam or canvas not available for face detection.');
+        setSnackbarAlert('Webcam or canvas not available for face detection.');
+        setCaptureImgError(true);
+      }
       setCaptureImgLoader(true);
       const imageSrc = webcamRef.current.getScreenshot();
       const img = new Image();
@@ -38,11 +43,11 @@ const CaptureUser = ({ firstName, lastName, email, dateOfBirth, onBack }) => {
         setButtonClickedCount((prev) => prev + 1);
       } else {
         setCaptureImgError(true);
-        setSnackbarAlert('Please re-take the image ');
+        setSnackbarAlert('Please re-take the image');
       }
     } catch (error) {
       setCaptureImgError(true);
-      setSnackbarAlert('Please re-take the image Or Check camera and lighting');
+      setSnackbarAlert('Please re-take the image');
     } finally {
       setCaptureImgLoader(false);
     }
@@ -76,7 +81,7 @@ const CaptureUser = ({ firstName, lastName, email, dateOfBirth, onBack }) => {
       };
 
       const docRef = await addUserData(userDetails);
-      // console.log('Document written with ID: ', docRef.id);
+      console.log('Document written with ID: ', docRef.id);
       dispatch(setGeneratedId(docRef.id));
       navigate('/loggedUser');
     } catch (e) {

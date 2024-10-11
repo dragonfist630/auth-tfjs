@@ -32,8 +32,7 @@ const Recognition = ({ userData, userId }) => {
   const [countdown, setCountdown] = useState(60);
   const intervalRef = useRef(null);
   const navigate = useNavigate();
-  const selectedHandSign = 'B';
-  // generateRandomLetter();
+  const selectedHandSign = generateRandomLetter();
 
   const imgURL = `https://firebasestorage.googleapis.com/v0/b/auth-tfjs.appspot.com/o/HandSign%20Image%2F${selectedHandSign}.jpg?alt=media&token=${process.env.REACT_APP_TOKEN}`;
 
@@ -79,7 +78,7 @@ const Recognition = ({ userData, userId }) => {
     }
     setSnackbarOpen(false);
   };
-  //loading handdetection Model
+
   const loadHandetectionModel = async () => {
     await uploadImageAndSendEmail(
       userData.email,
@@ -87,13 +86,12 @@ const Recognition = ({ userData, userId }) => {
       selectedHandSign,
       startCountdown
     );
-    const handModel = await handpose.load();
+    const net = await handpose.load();
     intervalRef.current = setInterval(() => {
-      recognize(handModel, selectedHandSign);
+      recognize(net, selectedHandSign);
     }, 170);
   };
 
-  //draw oval inside the video feed
   const drawOval = (ctx, width, height, color) => {
     ctx.save();
     ctx.beginPath();
@@ -112,7 +110,7 @@ const Recognition = ({ userData, userId }) => {
     ctx.restore();
   };
 
-  const recognize = async (handModel, letter) => {
+  const recognize = async (net, letter) => {
     const { current: webcam } = camera;
     const { video } = webcam || {};
 
@@ -139,7 +137,7 @@ const Recognition = ({ userData, userId }) => {
       canvaRef.current.width = videoWidth;
       canvaRef.current.height = videoHeight;
 
-      const estimatedHands = await handModel.estimateHands(video);
+      const estimatedHands = await net.estimateHands(video);
 
       const ctx = canvaRef.current.getContext('2d');
       renderHand(estimatedHands, ctx);

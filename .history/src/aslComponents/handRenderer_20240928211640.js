@@ -20,8 +20,8 @@ export const renderHand = (detections, canvasContext) => {
           canvasContext.beginPath();
           canvasContext.moveTo(points[startJoint][0], points[startJoint][1]);
           canvasContext.lineTo(points[endJoint][0], points[endJoint][1]);
-          canvasContext.strokeStyle = '#FF4500';
-          canvasContext.lineWidth = 3;
+          canvasContext.strokeStyle = '#FF4500'; 
+          canvasContext.lineWidth = 2;
           canvasContext.stroke();
         });
       });
@@ -29,7 +29,7 @@ export const renderHand = (detections, canvasContext) => {
       points.forEach(([x, y]) => {
         canvasContext.beginPath();
         canvasContext.arc(x, y, 5, 0, 3 * Math.PI);
-        canvasContext.fillStyle = '#32CD32';
+        canvasContext.fillStyle = '#32CD32'; 
         canvasContext.fill();
       });
     });

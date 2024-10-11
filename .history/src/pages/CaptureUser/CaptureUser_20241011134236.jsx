@@ -76,7 +76,7 @@ const CaptureUser = ({ firstName, lastName, email, dateOfBirth, onBack }) => {
       };
 
       const docRef = await addUserData(userDetails);
-      // console.log('Document written with ID: ', docRef.id);
+      console.log('Document written with ID: ', docRef.id);
       dispatch(setGeneratedId(docRef.id));
       navigate('/loggedUser');
     } catch (e) {

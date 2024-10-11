@@ -9,23 +9,20 @@ export const faceRecognition = async (img, userData) => {
             new Float32Array(userData.descriptors[i]),
           ])
       );
-      // console.log('labelDecritors', labeledDescriptors);
       let result = false;
-      const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.5);
-      // console.log('faceMatcher', faceMatcher);
-      const Fpredictions = await faceapi
-        .detectAllFaces(img)
+      const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors);
+      const detections = await faceapi
+        .detectAllFaces(img, new faceapi.TinyFaceDetectorOptions())
         .withFaceLandmarks()
         .withFaceDescriptors();
-      if (Fpredictions.length > 1) {
+      if (detections.length > 1) {
         resolve(false);
         return;
       }
-      Fpredictions.forEach((face) => {
+      detections.forEach((face) => {
         const { descriptor } = face;
         const bestMatch = faceMatcher.findBestMatch(descriptor);
-        if (bestMatch.distance < 0.5) {
-          // console.log('bestMatch', bestMatch);
+        if (bestMatch.label < 0.6) {
           result = userData.name;
         } else {
           result = false;

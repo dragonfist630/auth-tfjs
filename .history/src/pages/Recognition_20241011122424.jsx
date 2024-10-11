@@ -4,7 +4,7 @@ import '@tensorflow/tfjs-backend-webgl';
 import * as handpose from '@tensorflow-models/handpose';
 import Webcam from 'react-webcam';
 import { renderHand } from '../aslComponents/handRenderer';
-import * as pose from 'fingerpose';
+import * as fp from 'fingerpose';
 import aslSigns from '../aslComponents/gesture';
 import * as faceapi from '@vladmandic/face-api';
 import { faceRecognition } from '../services/faceRecognition';
@@ -23,8 +23,8 @@ const ALPHABETS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 const Recognition = ({ userData, userId }) => {
   const dispatch = useDispatch();
-  const camera = useRef(null);
-  const canvaRef = useRef(null);
+  const webcamRef = useRef(null);
+  const canvasRef = useRef(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [canvasState, setCanvasState] = useState('block');
@@ -79,21 +79,20 @@ const Recognition = ({ userData, userId }) => {
     }
     setSnackbarOpen(false);
   };
-  //loading handdetection Model
-  const loadHandetectionModel = async () => {
+
+  const runHandpose = async () => {
     await uploadImageAndSendEmail(
       userData.email,
       emailContent,
       selectedHandSign,
       startCountdown
     );
-    const handModel = await handpose.load();
+    const net = await handpose.load();
     intervalRef.current = setInterval(() => {
-      recognize(handModel, selectedHandSign);
+      recognize(net, selectedHandSign);
     }, 170);
   };
 
-  //draw oval inside the video feed
   const drawOval = (ctx, width, height, color) => {
     ctx.save();
     ctx.beginPath();
@@ -112,23 +111,18 @@ const Recognition = ({ userData, userId }) => {
     ctx.restore();
   };
 
-  const recognize = async (handModel, letter) => {
-    const { current: webcam } = camera;
+  const recognize = async (net, letter) => {
+    const { current: webcam } = webcamRef;
     const { video } = webcam || {};
 
-    if (
-      video.readyState !== 4 ||
-      !webcam ||
-      !webcam.video ||
-      !canvaRef.current ||
-      actionTaken
-    ) {
+    if (!webcam || !webcam.video || !canvasRef.current) {
       console.error('Webcam or canvas not available for face detection.');
-      setSnackbarMessage('Webcam or canvas not available for face detection.');
-      setSnackbarOpen(true);
       return;
     }
 
+    if (actionTaken || !video || video.readyState !== 4) {
+      return;
+    }
     try {
       const videoWidth = video.videoWidth;
       const videoHeight = video.videoHeight;
@@ -136,23 +130,21 @@ const Recognition = ({ userData, userId }) => {
       webcam.video.width = videoWidth;
       webcam.video.height = videoHeight;
 
-      canvaRef.current.width = videoWidth;
-      canvaRef.current.height = videoHeight;
+      canvasRef.current.width = videoWidth;
+      canvasRef.current.height = videoHeight;
 
-      const estimatedHands = await handModel.estimateHands(video);
+      const estimatedHands = await net.estimateHands(video);
 
-      const ctx = canvaRef.current.getContext('2d');
+      const ctx = canvasRef.current.getContext('2d');
       renderHand(estimatedHands, ctx);
-
-      //creating oval in the center of camera feed
-      ctx.clearRect(0, 0, canvaRef.width, canvaRef.height);
+      ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
       ctx.save();
       ctx.beginPath();
       ctx.ellipse(
-        canvaRef.current.width / 2,
-        canvaRef.current.height / 2 - 20,
-        canvaRef.current.width / 6,
-        canvaRef.current.height / 3.5,
+        canvasRef.current.width / 2,
+        canvasRef.current.height / 2 - 20,
+        canvasRef.current.width / 6,
+        canvasRef.current.height / 3.5,
         0,
         0,
         2 * Math.PI
@@ -160,21 +152,22 @@ const Recognition = ({ userData, userId }) => {
       ctx.clip();
       ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
       ctx.restore();
-
-      //converting the snapshot of the video inside oval to faceapi acceptable format
-      const imageData = canvaRef.current.toDataURL('image/png');
+      const imageData = canvasRef.current.toDataURL('image/png');
       const img = await faceapi.fetchImage(imageData);
       const detections = await faceapi.detectAllFaces(img).withFaceLandmarks();
-
-      //check if there is any face detected inside oval.
       if (detections.length > 0) {
-        // console.log('Face Detected', detections);
-        drawOval(ctx, canvaRef.current.width, canvaRef.current.height, 'green');
+        console.log('Face Detected', detections);
+        drawOval(
+          ctx,
+          canvasRef.current.width,
+          canvasRef.current.height,
+          'green'
+        );
       } else {
         drawOval(
           ctx,
-          canvaRef.current.width,
-          canvaRef.current.height,
+          canvasRef.current.width,
+          canvasRef.current.height,
           'purple'
         );
       }
@@ -182,14 +175,17 @@ const Recognition = ({ userData, userId }) => {
         const alphabetSigns = ALPHABETS.toLowerCase()
           .split('')
           .map((l) => aslSigns[`${l}_ASL`]);
-        const handperdictor = new pose.GestureEstimator([...alphabetSigns]);
-        const predictedHand = await handperdictor.estimate(
+        const GE = new fp.GestureEstimator([
+          fp.Gestures.ThumbsUpGesture,
+          ...alphabetSigns,
+        ]);
+        const estimatedGestures = await GE.estimate(
           estimatedHands[0].landmarks,
           6.5
         );
-        const handSign = predictedHand.gestures.reduce((maxObj, obj) => {
+        const handSign = estimatedGestures.gestures.reduce((maxObj, obj) => {
           return obj.score > maxObj.score ? obj : maxObj;
-        }, predictedHand.gestures[0])?.name;
+        }, estimatedGestures.gestures[0])?.name;
         if (handSign === letter) {
           if (detections.length < 1) {
             setSnackbarMessage(
@@ -203,9 +199,9 @@ const Recognition = ({ userData, userId }) => {
           setActionTaken(true);
           setCanvasState('none');
           const mobileDetected = await detectMobilePhone(video);
-          // if (mobileDetected) {
-          //   console.log('Mobile phone detected in the video feed.');
-          // }
+          if (mobileDetected) {
+            console.log('Mobile phone detected in the video feed.');
+          }
           const isRecognized = await faceRecognition(img, userData);
           if (webcam && webcam.video && webcam.video.srcObject) {
             const stream = webcam.video.srcObject;
@@ -223,7 +219,7 @@ const Recognition = ({ userData, userId }) => {
             );
             return navigate(`/authenticated?username=${isRecognized}`);
           } else {
-            // console.log(isRecognized);
+            console.log(isRecognized);
             return navigate(`/authenticated?username=${isRecognized}`);
           }
         }
@@ -236,7 +232,7 @@ const Recognition = ({ userData, userId }) => {
   useEffect(() => {
     const loadAndRunModels = async () => {
       try {
-        loadHandetectionModel();
+        runHandpose();
       } catch (error) {
         console.error('Error during model loading or inference:', error);
       }
@@ -272,7 +268,8 @@ const Recognition = ({ userData, userId }) => {
               }}
             >
               <Webcam
-                ref={camera}
+                id="webcam"
+                ref={webcamRef}
                 style={{
                   width: '100%',
                   height: '100%',
@@ -281,7 +278,8 @@ const Recognition = ({ userData, userId }) => {
                 }}
               />
               <canvas
-                ref={canvaRef}
+                id="gesture-canvas"
+                ref={canvasRef}
                 style={{
                   display: canvasState,
                   position: 'absolute',
