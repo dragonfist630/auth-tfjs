@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { clearUser } from '../../redux/userSlice';
+import { clearUser, clearError, clearId } from '../../redux/userSlice';
 import { deleteUserData } from '../../firebaseUtils/apiService';
 
 const AuthUser = () => {
@@ -26,6 +26,8 @@ const AuthUser = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [emailToDelete, setEmailToDelete] = useState('');
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
+  // const [error, setError] = useState('');
+  // const error = useSelector((state) => state.user.error);
 
   const handleDeleteClick = () => {
     setOpenDialog(true);
@@ -51,6 +53,9 @@ const AuthUser = () => {
 
   const handleConfirmationClose = () => {
     setOpenConfirmationModal(false);
+    dispatch(clearUser());
+    dispatch(clearError());
+    dispatch(clearId());
     navigate('/');
   };
 
@@ -96,7 +101,7 @@ const AuthUser = () => {
                 Authentication Error
               </Typography>
               <Typography variant="body1" sx={{ mb: 3 }}>
-                Please try again.
+                {user.error || 'Please try again.'}
               </Typography>
             </>
           )}
@@ -107,6 +112,8 @@ const AuthUser = () => {
                 color="primary"
                 onClick={() => {
                   dispatch(clearUser());
+                  dispatch(clearError());
+                  dispatch(clearId());
                   navigate('/login');
                 }}
               >

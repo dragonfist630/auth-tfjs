@@ -8,6 +8,7 @@ const userSlice = createSlice({
     dateOfBirth: '',
     userId: '',
     generatedId: '',
+    error: '',
   },
   reducers: {
     setUser: (state, action) => {
@@ -20,6 +21,9 @@ const userSlice = createSlice({
     setGeneratedId: (state, action) => {
       state.generatedId = action.payload;
     },
+    setError: (state, action) => {
+      state.error = action.payload;
+    },
     clearUser: (state) => {
       state.name = '';
       state.email = '';
@@ -27,8 +31,21 @@ const userSlice = createSlice({
       state.userId = '';
       state.generatedId = '';
     },
+    clearError: (state) => {
+      state.error = '';
+    },
+    clearId: (state) => {
+      state.generatedId = '';
+    },
   },
 });
 
-export const { setUser, setGeneratedId, clearUser } = userSlice.actions;
+export const {
+  setUser,
+  setGeneratedId,
+  setError,
+  clearUser,
+  clearId,
+  clearError,
+} = userSlice.actions;
 export default userSlice.reducer;

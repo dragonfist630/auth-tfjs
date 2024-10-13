@@ -13,7 +13,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../redux/userSlice';
+import { setUser, setError } from '../redux/userSlice';
 import { uploadImageAndSendEmail } from '../firebaseUtils/apiService';
 import { generateRandomLetter } from '../services/randomLetterService';
 import { clearUser } from '../redux/userSlice';
@@ -32,8 +32,7 @@ const Recognition = ({ userData, userId }) => {
   const [countdown, setCountdown] = useState(60);
   const intervalRef = useRef(null);
   const navigate = useNavigate();
-  const selectedHandSign = 'B';
-  // generateRandomLetter();
+  const selectedHandSign = generateRandomLetter();
 
   const imgURL = `https://firebasestorage.googleapis.com/v0/b/auth-tfjs.appspot.com/o/HandSign%20Image%2F${selectedHandSign}.jpg?alt=media&token=${process.env.REACT_APP_TOKEN}`;
 
@@ -65,6 +64,7 @@ const Recognition = ({ userData, userId }) => {
         if (prev <= 1) {
           clearInterval(intervalRef.current);
           dispatch(clearUser());
+          dispatch(setError('Time out. Please try again.'));
           navigate('/authenticated?username=invalid');
           return 0;
         }
@@ -203,15 +203,8 @@ const Recognition = ({ userData, userId }) => {
           setActionTaken(true);
           setCanvasState('none');
           const mobileDetected = await detectMobilePhone(video);
-          // if (mobileDetected) {
-          //   console.log('Mobile phone detected in the video feed.');
-          // }
+          console.log('Mobile Detected:', mobileDetected);
           const isRecognized = await faceRecognition(img, userData);
-          if (webcam && webcam.video && webcam.video.srcObject) {
-            const stream = webcam.video.srcObject;
-            const tracks = stream.getTracks();
-            tracks.forEach((track) => track.stop());
-          }
           if (isRecognized && !mobileDetected) {
             dispatch(
               setUser({
@@ -223,7 +216,11 @@ const Recognition = ({ userData, userId }) => {
             );
             return navigate(`/authenticated?username=${isRecognized}`);
           } else {
-            // console.log(isRecognized);
+            if (mobileDetected) {
+              dispatch(setError('There was a spoofing attempt using a mobile phone.'));
+            }else{
+              dispatch(setError('Face not recognized.'));
+            }
             return navigate(`/authenticated?username=${isRecognized}`);
           }
         }
