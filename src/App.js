@@ -16,7 +16,7 @@ export default function App() {
   }, []);
 
   return (
-    <Router>
+    <Router basename="/auth-tfjs">
       <Routes>
         <Route path="/" element={<RegisterUser />} />
         <Route path="/login" element={<Login />} />
