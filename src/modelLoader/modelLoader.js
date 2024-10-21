@@ -3,10 +3,10 @@ import * as faceapi from '@vladmandic/face-api';
 export const loadModels = async () => {
   try {
     await Promise.all([
-      faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
-      faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-      faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-      faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+      faceapi.nets.ssdMobilenetv1.loadFromUri('/auth-tfjs/models'),
+      faceapi.nets.tinyFaceDetector.loadFromUri('/auth-tfjs/models'),
+      faceapi.nets.faceLandmark68Net.loadFromUri('/auth-tfjs/models'),
+      faceapi.nets.faceRecognitionNet.loadFromUri('/auth-tfjs/models'),
     ]);
     console.log('Face Models are loaded!!!');
   } catch (error) {

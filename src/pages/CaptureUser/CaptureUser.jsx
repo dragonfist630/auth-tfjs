@@ -143,7 +143,7 @@ const CaptureUser = ({ firstName, lastName, email, dateOfBirth, onBack }) => {
                 <Box
                   component="img"
                   alt="Face Snapshot Guide"
-                  src={`/snapshotGuide/face_${buttonClickedCount + 1}.jpg`}
+                  src={`/auth-tfjs/snapshotGuide/face_${buttonClickedCount + 1}.jpg`}
                   sx={{
                     width: { xs: '80%', md: 250 },
                     height: 'auto',

@@ -32,7 +32,8 @@ const Recognition = ({ userData, userId }) => {
   const [countdown, setCountdown] = useState(60);
   const intervalRef = useRef(null);
   const navigate = useNavigate();
-  const selectedHandSign = generateRandomLetter();
+  const selectedHandSign = 'B';
+  // generateRandomLetter();
 
   const imgURL = `https://firebasestorage.googleapis.com/v0/b/auth-tfjs.appspot.com/o/HandSign%20Image%2F${selectedHandSign}.jpg?alt=media&token=${process.env.REACT_APP_TOKEN}`;
 
@@ -217,8 +218,10 @@ const Recognition = ({ userData, userId }) => {
             return navigate(`/authenticated?username=${isRecognized}`);
           } else {
             if (mobileDetected) {
-              dispatch(setError('There was a spoofing attempt using a mobile phone.'));
-            }else{
+              dispatch(
+                setError('There was a spoofing attempt using a mobile phone.')
+              );
+            } else {
               dispatch(setError('Face not recognized.'));
             }
             return navigate(`/authenticated?username=${isRecognized}`);
