@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/auth-tfjs/static/js/main.07a7947c.js",
+    "main.js": "/auth-tfjs/static/js/main.b0ce2505.js",
     "index.html": "/auth-tfjs/index.html",
-    "main.07a7947c.js.map": "/auth-tfjs/static/js/main.07a7947c.js.map"
+    "main.b0ce2505.js.map": "/auth-tfjs/static/js/main.b0ce2505.js.map"
   },
   "entrypoints": [
-    "static/js/main.07a7947c.js"
+    "static/js/main.b0ce2505.js"
   ]
 }
