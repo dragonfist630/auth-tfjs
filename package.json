@@ -42,7 +42,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "predeploy": "yarn build",
-    "deploy": "gh-pages -d build --repo https://dragonfist630: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@github.com/dragonfist630/auth-tfjs.git"
+    "deploy": "gh-pages -d build --repo git@github.com:dragonfist630/auth-tfjs.git"
   },
   "eslintConfig": {
     "extends": [
