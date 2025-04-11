@@ -2,6 +2,7 @@
   "name": "auth-tfjs",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://dragonfist630.github.io/auth-tfjs",
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
@@ -72,6 +73,5 @@
     "eslint-plugin-react-hooks": "4.3.0",
     "globals": "^15.9.0",
     "prettier": "^3.3.3"
-  },
-  "homepage": "https://dragonfist630.github.io/auth-tfjs"
+  }
 }
