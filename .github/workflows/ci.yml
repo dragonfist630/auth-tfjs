@@ -1,0 +1,8 @@
+- name: Lint code
+  run: npm run lint  # -> this will show up as 'Lint code' in GitHub UI
+
+- name: Run tests
+  run: npm test      # -> this will show up as 'Run tests'
+
+- name: Build project
+  run: npm run build # -> this will show up as 'Build project'
