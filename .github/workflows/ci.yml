@@ -1,8 +1,23 @@
-- name: Lint code
-  run: npm run lint  # -> this will show up as 'Lint code' in GitHub UI
+name: CI
 
-- name: Run tests
-  run: npm test      # -> this will show up as 'Run tests'
+on: [pull_request]
 
-- name: Build project
-  run: npm run build # -> this will show up as 'Build project'
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint code
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build project
+        run: npm run build
