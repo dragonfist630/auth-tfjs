@@ -4,7 +4,7 @@ import LoggedUser from './pages/LoggedUser/LoggedUser';
 import AuthUser from './pages/authUser/AuthUser';
 import RegisterUser from './pages/RegisterUser/RegisterUser';
 import { loadModels } from './modelLoader/modelLoader';
-import Login from './pages/Login/Login';
+import Login from './pages/Login/Login'
 
 export default function App() {
   useEffect(() => {
